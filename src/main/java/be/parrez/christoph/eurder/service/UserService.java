@@ -65,20 +65,20 @@ public class UserService {
         return userMapper.toDto(newUser);
     }
 
-    public List<UserDto> getCustomers(String uuid) {
+    public List<UserDto> getCustomers(String authorizedId) {
 
-        if (checkUserRole(uuid, UserRole.ADMIN)) {
-            logger.warn("getCustomers -> User is not admin");
+        if (!checkUserRole(authorizedId, UserRole.ADMIN)) {
+            logger.warn("getCustomers -> User with id " + authorizedId + " is not admin");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to get a list of customers.");
         }
 
         return userMapper.toDto(getUsersByRole(UserRole.CUSTOMER));
     }
 
-    public UserDto getCustomer(String adminId, String customerId) {
+    public UserDto getCustomer(String authorizedId, String customerId) {
 
-        if (checkUserRole(adminId, UserRole.ADMIN)) {
-            logger.warn("getCustomer -> User is not admin");
+        if (!checkUserRole(authorizedId, UserRole.ADMIN)) {
+            logger.warn("getCustomer -> User with id " + authorizedId + " is not admin");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to get the customer details.");
         }
 
@@ -107,12 +107,12 @@ public class UserService {
     }
 
     public boolean checkUserRole(String userId, UserRole role) {
-        if (userId == null || role == null) return true;
+        if (userId == null || role == null) return false;
         User user = userRepository.getRepository().get(userId);
         if (user == null) {
             logger.warn("No user with id " + userId + " found when checking for role");
-            return true;
+            return false;
         }
-        return user.getUserRole() == role;
+        return user.getUserRole().equals(role);
     }
 }

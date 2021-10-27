@@ -1,5 +1,7 @@
 package be.parrez.christoph.eurder.mapper;
 
+import be.parrez.christoph.eurder.controller.ItemController;
+import be.parrez.christoph.eurder.dto.ItemCreateDto;
 import be.parrez.christoph.eurder.dto.ItemDto;
 import be.parrez.christoph.eurder.model.Item;
 import org.springframework.stereotype.Service;
@@ -9,8 +11,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class ItemMapper {
-    public Item toEntity(ItemDto dto) {
-
+    public Item toEntity(ItemCreateDto dto) {
+        return new Item(dto.getName(), dto.getDescription(), dto.getPrice(), dto.getAmount());
     }
 
     public List<ItemDto> toDto(List<Item> items) {

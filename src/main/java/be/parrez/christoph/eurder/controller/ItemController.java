@@ -1,5 +1,6 @@
 package be.parrez.christoph.eurder.controller;
 
+import be.parrez.christoph.eurder.dto.ItemCreateDto;
 import be.parrez.christoph.eurder.dto.ItemDto;
 import be.parrez.christoph.eurder.service.ItemService;
 import org.slf4j.Logger;
@@ -32,11 +33,11 @@ public class ItemController {
     // public UserDto getById(@RequestHeader(value = "uuid", required = false) String adminId, @PathVariable(value = "uuid") String customerId) {
     //     return userService.getCustomer(adminId, customerId);
     // }
-    //
-    // @PostMapping(consumes = "application/json", produces = "application/json")
-    // @ResponseStatus(HttpStatus.CREATED)
-    // public UserDto add(@RequestBody UserRegisterDto userDto) {
-    //     logger.info("Incoming user register request");
-    //     return userService.registerCustomer(userDto);
-    // }
+
+    @PostMapping(consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ItemDto add(@RequestHeader(required = false) String authorizedId, @RequestBody ItemCreateDto itemDto) {
+        logger.info("Incoming user register request");
+        return itemService.addItem(authorizedId, itemDto);
+    }
 }

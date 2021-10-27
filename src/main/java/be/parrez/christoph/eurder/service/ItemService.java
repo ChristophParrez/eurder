@@ -1,5 +1,6 @@
 package be.parrez.christoph.eurder.service;
 
+import be.parrez.christoph.eurder.dto.ItemCreateDto;
 import be.parrez.christoph.eurder.dto.ItemDto;
 import be.parrez.christoph.eurder.mapper.ItemMapper;
 import be.parrez.christoph.eurder.model.Item;
@@ -48,14 +49,15 @@ public class ItemService {
         return itemMapper.toDto(new ArrayList<>(itemRepository.getRepository().values()));
     }
 
-    public ItemDto addItem(ItemDto itemDto) {
-        if (checkUserRole(adminId, UserRole.ADMIN)) {
-            logger.warn("getCustomer -> User is not admin");
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to get the customer details.");
+    public ItemDto addItem(String adminId, ItemCreateDto itemDto) {
+        if (userService.checkUserRole(adminId, UserRole.ADMIN)) {
+            logger.warn("addItem -> User with id " + adminId + " is not admin");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to add items.");
         }
 
-        Item newItem = itemMapper.
+        Item newItem = itemMapper.toEntity(itemDto);
+        itemRepository.getRepository().put(newItem.getId(), newItem);
 
-        return itemMapper.toDto(new Item());
+        return itemMapper.toDto(newItem);
     }
 }
