@@ -3,14 +3,15 @@ package be.parrez.christoph.eurder.mapper;
 import be.parrez.christoph.eurder.dto.UserDto;
 import be.parrez.christoph.eurder.dto.UserRegisterDto;
 import be.parrez.christoph.eurder.model.User;
+import be.parrez.christoph.eurder.model.UserRole;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class UserMapper {
-    public User toEntity(UserRegisterDto dto) {
-        return new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getStreet(), dto.getHouseNumber(), dto.getPostalCode(), dto.getCity(), dto.getPhoneNumber());
+    public User toEntity(UserRegisterDto dto, UserRole userRole) {
+        return new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getStreet(), dto.getHouseNumber(), dto.getPostalCode(), dto.getCity(), dto.getPhoneNumber(), userRole);
     }
 
     public List<UserDto> toDto(List<User> entities) {

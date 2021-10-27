@@ -2,6 +2,7 @@ package be.parrez.christoph.eurder.service;
 
 import be.parrez.christoph.eurder.dto.ItemCreateDto;
 import be.parrez.christoph.eurder.dto.ItemDto;
+import be.parrez.christoph.eurder.exceptions.BadRequestException;
 import be.parrez.christoph.eurder.mapper.ItemMapper;
 import be.parrez.christoph.eurder.model.Item;
 import be.parrez.christoph.eurder.model.UserRole;
@@ -9,13 +10,8 @@ import be.parrez.christoph.eurder.repository.ItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -45,19 +41,34 @@ public class ItemService {
         this.itemRepository.getRepository().put(item3.getId(), item3);
     }
 
-    public List<ItemDto> getItems(String userId) {
-        return itemMapper.toDto(new ArrayList<>(itemRepository.getRepository().values()));
+    public List<ItemDto> getItems() {
+        return itemMapper.toDto(itemRepository.getRepository().values().stream().toList());
     }
 
-    public ItemDto addItem(String adminId, ItemCreateDto itemDto) {
-        if (userService.checkUserRole(adminId, UserRole.ADMIN)) {
-            logger.warn("addItem -> User with id " + adminId + " is not admin");
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to add items.");
-        }
+    public ItemDto addItem(String authorizedId, ItemCreateDto itemDto) {
+        userService.assertUserPermissions(authorizedId, UserRole.ADMIN, "You are not authorized to add items.");
 
         Item newItem = itemMapper.toEntity(itemDto);
         itemRepository.getRepository().put(newItem.getId(), newItem);
+        logger.info("Created new item with id " + newItem.getId());
 
         return itemMapper.toDto(newItem);
+    }
+
+    public ItemDto updateItem(String authorizedId, String itemId, ItemCreateDto itemDto) {
+        userService.assertUserPermissions(authorizedId, UserRole.ADMIN, "You are not authorized to update items.");
+
+        Item itemUpdate = itemRepository.getRepository().get(itemId);
+        if (itemUpdate == null) throw new BadRequestException("The item with id " + itemId + " could not be found.", logger);
+
+        itemUpdate.setName(itemDto.getName());
+        itemUpdate.setAmount(itemDto.getAmount());
+        itemUpdate.setDescription(itemDto.getDescription());
+        itemUpdate.setPrice(itemDto.getPrice());
+
+        itemRepository.getRepository().put(itemId, itemUpdate);
+        logger.info("Updated item with id " + itemId);
+
+        return itemMapper.toDto(itemUpdate);
     }
 }

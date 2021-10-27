@@ -3,6 +3,7 @@ package be.parrez.christoph.eurder.mapper;
 import be.parrez.christoph.eurder.controller.ItemController;
 import be.parrez.christoph.eurder.dto.ItemCreateDto;
 import be.parrez.christoph.eurder.dto.ItemDto;
+import be.parrez.christoph.eurder.dto.ItemUpdateDto;
 import be.parrez.christoph.eurder.model.Item;
 import org.springframework.stereotype.Service;
 

@@ -2,18 +2,20 @@ package be.parrez.christoph.eurder.service;
 
 import be.parrez.christoph.eurder.dto.UserDto;
 import be.parrez.christoph.eurder.dto.UserRegisterDto;
+import be.parrez.christoph.eurder.exceptions.BadRequestException;
+import be.parrez.christoph.eurder.exceptions.UnauthorizedException;
 import be.parrez.christoph.eurder.mapper.UserMapper;
 import be.parrez.christoph.eurder.model.User;
 import be.parrez.christoph.eurder.model.UserRole;
 import be.parrez.christoph.eurder.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
@@ -43,52 +45,30 @@ public class UserService {
     }
 
     public UserDto registerCustomer(UserRegisterDto userDto) {
-        return registerUser(userDto);
+        return registerUser(userDto, UserRole.CUSTOMER);
     }
 
-    public UserDto registerUser(UserRegisterDto userDto) {
-
-        if (!isValidEmail(userDto.getEmail())) {
-            logger.warn("Could not create user - Email not valid");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is not valid");
-        }
-
-        if (!isUniqueEmail(userDto.getEmail())) {
-            logger.warn("Could not create user - Email not unique");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A user with the email " + userDto.getEmail() + " already exists");
-        }
-
-        User newUser = userMapper.toEntity(userDto);
+    public UserDto registerUser(UserRegisterDto userDto, UserRole userRole) {
+        if (!isValidEmail(userDto.getEmail()))
+            throw new BadRequestException("Email " + userDto.getEmail() + " is invalid", logger);
+        if (!isUniqueEmail(userDto.getEmail()))
+            throw new BadRequestException("A user with the email " + userDto.getEmail() + " already exists", logger);
+        User newUser = userMapper.toEntity(userDto, userRole);
         userRepository.getRepository().put(newUser.getId(), newUser);
-        logger.info("Created new user: " + newUser);
-
+        logger.info("Created new user with id " + newUser.getId());
         return userMapper.toDto(newUser);
     }
 
-    public List<UserDto> getCustomers(String authorizedId) {
-
-        if (!checkUserRole(authorizedId, UserRole.ADMIN)) {
-            logger.warn("getCustomers -> User with id " + authorizedId + " is not admin");
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to get a list of customers.");
-        }
-
-        return userMapper.toDto(getUsersByRole(UserRole.CUSTOMER));
+    public UserDto getCustomer(String authorizedId, String customerId) {
+        assertUserPermissions(authorizedId, UserRole.ADMIN, "You are not authorized to get customer details.");
+        User user = userRepository.getRepository().get(customerId);
+        if (user == null) throw new BadRequestException("The user with id " + customerId + " could not be found.");
+        return userMapper.toDto(user);
     }
 
-    public UserDto getCustomer(String authorizedId, String customerId) {
-
-        if (!checkUserRole(authorizedId, UserRole.ADMIN)) {
-            logger.warn("getCustomer -> User with id " + authorizedId + " is not admin");
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to get the customer details.");
-        }
-
-        User user = userRepository.getRepository().get(customerId);
-        if (user == null) {
-            logger.warn("getCustomer -> User with id " + customerId + " not found");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user with id " + customerId + " could not be found.");
-        }
-
-        return userMapper.toDto(user);
+    public List<UserDto> getCustomerList(String authorizedId) {
+        assertUserPermissions(authorizedId, UserRole.ADMIN, "You are not authorized to get a list of customers.");
+        return userMapper.toDto(getUsersByRole(UserRole.CUSTOMER));
     }
 
     public List<User> getUsersByRole(UserRole userRole) {
@@ -106,13 +86,11 @@ public class UserService {
                 .noneMatch(user -> user.getEmail().equals(email));
     }
 
-    public boolean checkUserRole(String userId, UserRole role) {
-        if (userId == null || role == null) return false;
+    public void assertUserPermissions(String userId, UserRole userRole, String message) {
         User user = userRepository.getRepository().get(userId);
-        if (user == null) {
-            logger.warn("No user with id " + userId + " found when checking for role");
-            return false;
+        if (userId == null || user == null || !user.getUserRole().equals(userRole)) {
+            logger.warn("User with id " + userId + " did not match user role " + userRole);
+            throw new UnauthorizedException(message);
         }
-        return user.getUserRole().equals(role);
     }
 }

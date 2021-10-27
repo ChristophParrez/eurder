@@ -26,12 +26,14 @@ public class CustomerController {
     @GetMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getAll(@RequestHeader(required = false) String authorizedId) {
-        return userService.getCustomers(authorizedId);
+        logger.info("Incoming get customer list");
+        return userService.getCustomerList(authorizedId);
     }
 
     @GetMapping(path = "/{customerId}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto getById(@RequestHeader(required = false) String authorizedId, @PathVariable(value = "customerId") String customerId) {
+    public UserDto getById(@RequestHeader(required = false) String authorizedId, @PathVariable String customerId) {
+        logger.info("Incoming get customer details request");
         return userService.getCustomer(authorizedId, customerId);
     }
 

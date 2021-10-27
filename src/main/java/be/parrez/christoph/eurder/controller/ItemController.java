@@ -24,8 +24,8 @@ public class ItemController {
 
     @GetMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemDto> getAll(@RequestHeader(required = false) String userId) {
-        return itemService.getItems(userId);
+    public List<ItemDto> getAll() {
+        return itemService.getItems();
     }
 
     // @GetMapping(path = "/{uuid}", produces = "application/json")
@@ -37,7 +37,16 @@ public class ItemController {
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public ItemDto add(@RequestHeader(required = false) String authorizedId, @RequestBody ItemCreateDto itemDto) {
-        logger.info("Incoming user register request");
+        logger.info("Incoming item add request");
         return itemService.addItem(authorizedId, itemDto);
+    }
+
+    @PutMapping(path = "/{itemId}", consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public ItemDto update(@RequestHeader(required = false) String authorizedId,
+                          @RequestBody ItemCreateDto itemDto,
+                          @PathVariable String itemId) {
+        logger.info("Incoming item update request");
+        return itemService.updateItem(authorizedId, itemId, itemDto);
     }
 }
