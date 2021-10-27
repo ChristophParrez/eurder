@@ -25,13 +25,13 @@ public class CustomerController {
 
     @GetMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getAll(@RequestHeader(value = "uuid", required = false) String uuid) {
+    public List<UserDto> getAll(@RequestHeader(value = "userId", required = false) String uuid) {
         return userService.getCustomers(uuid);
     }
 
-    @GetMapping(path = "/{uuid}", produces = "application/json")
+    @GetMapping(path = "/{customerId}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto getById(@RequestHeader(value = "uuid", required = false) String adminId, @PathVariable(value = "uuid") String customerId) {
+    public UserDto getById(@RequestHeader(value = "userId", required = false) String adminId, @PathVariable(value = "customerId") String customerId) {
         return userService.getCustomer(adminId, customerId);
     }
 

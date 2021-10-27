@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,10 +32,10 @@ public class UserService {
     }
 
     public void addDummyData() {
-        User admin = new User("3ee4a38b-27a0-admin-ad21-84833182a336", "Christoph", "Parrez", "christoph.parrez@gmail.com", "0497123456", UserRole.ADMIN);
-        User user1 = new User("cd52f722-9530-user1-8fd1-184f12a75222", "John", "Doe", "john.doe@gmail.com", "0494962154", UserRole.CUSTOMER);
-        User user2 = new User("cd52f722-9530-user2-8fd1-184f12a75222", "Sam", "Smith", "sam.smith@gmail.com", "0477963297", UserRole.CUSTOMER);
-        User user3 = new User("cd52f722-9530-user3-8fd1-184f12a75222", "Joe", "Johnson", "joe.johnson@gmail.com", "046963487", UserRole.CUSTOMER);
+        User admin = new User("3ee4a38b-27a0-admin-ad21-84833182a336", "Christoph", "Parrez", "christoph.parrez@gmail.com", "Street", "1A", "9340", "Lede", "0497123456", UserRole.ADMIN);
+        User user1 = new User("cd52f722-9530-user1-8fd1-184f12a75222", "John", "Doe", "john.doe@gmail.com", "Street", "10", "9300", "Aalst", "0494962154", UserRole.CUSTOMER);
+        User user2 = new User("cd52f722-9530-user2-8fd1-184f12a75222", "Sam", "Smith", "sam.smith@gmail.com", "Street", "20", "1000", "Brussel", "0477963297", UserRole.CUSTOMER);
+        User user3 = new User("cd52f722-9530-user3-8fd1-184f12a75222", "Joe", "Johnson", "joe.johnson@gmail.com", "Street", "30", "9000", "Gent", "046963487", UserRole.CUSTOMER);
         this.userRepository.getRepository().put(admin.getId(), admin);
         this.userRepository.getRepository().put(user1.getId(), user1);
         this.userRepository.getRepository().put(user2.getId(), user2);
@@ -107,13 +106,13 @@ public class UserService {
                 .noneMatch(user -> user.getEmail().equals(email));
     }
 
-    public boolean checkUserRole(String uuid, UserRole role) {
-        if (uuid == null || role == null) return true;
-        User user = userRepository.getRepository().get(uuid);
+    public boolean checkUserRole(String userId, UserRole role) {
+        if (userId == null || role == null) return true;
+        User user = userRepository.getRepository().get(userId);
         if (user == null) {
-            logger.warn("No user with id " + uuid + " found when checking for role");
+            logger.warn("No user with id " + userId + " found when checking for role");
             return true;
         }
-        return user.getUserRole() != role;
+        return user.getUserRole() == role;
     }
 }

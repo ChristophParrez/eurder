@@ -7,22 +7,30 @@ public class User {
     private final String firstName;
     private final String lastName;
     private final String email;
+    private final String street;
+    private final String houseNumber;
+    private final String postalCode;
+    private final String city;
     private final String phoneNumber;
     private final UserRole userRole;
 
-    public User(String firstName, String lastName, String email, String phoneNumber) {
-        this(firstName, lastName, email, phoneNumber, UserRole.CUSTOMER);
+    public User(String firstName, String lastName, String email, String street, String houseNumber, String postalCode, String city, String phoneNumber) {
+        this(firstName, lastName, email, street, houseNumber, postalCode, city, phoneNumber, UserRole.CUSTOMER);
     }
 
-    public User(String firstName, String lastName, String email, String phoneNumber, UserRole userRole) {
-        this(UUID.randomUUID().toString(), firstName, lastName, email, phoneNumber, userRole);
+    public User(String firstName, String lastName, String email, String street, String houseNumber, String postalCode, String city, String phoneNumber, UserRole userRole) {
+        this(UUID.randomUUID().toString(), firstName, lastName, email, street, houseNumber, postalCode, city, phoneNumber, userRole);
     }
 
-    public User(String userId, String firstName, String lastName, String email, String phoneNumber, UserRole userRole) {
+    public User(String userId, String firstName, String lastName, String email, String street, String houseNumber, String postalCode, String city, String phoneNumber, UserRole userRole) {
         this.id = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.street = street;
+        this.houseNumber = houseNumber;
+        this.postalCode = postalCode;
+        this.city = city;
         this.phoneNumber = phoneNumber;
         this.userRole = userRole;
     }
@@ -41,6 +49,22 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public String getHouseNumber() {
+        return houseNumber;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public String getCity() {
+        return city;
     }
 
     public String getPhoneNumber() {

@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class UserMapper {
     public User toEntity(UserRegisterDto dto) {
-        return new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getPhoneNumber());
+        return new User(dto.getFirstName(), dto.getLastName(), dto.getEmail(), dto.getStreet(), dto.getHouseNumber(), dto.getPostalCode(), dto.getCity(), dto.getPhoneNumber());
     }
 
     public List<UserDto> toDto(List<User> entities) {
@@ -18,6 +18,6 @@ public class UserMapper {
     }
 
     public UserDto toDto(User entity) {
-        return new UserDto(entity.getId(), entity.getFirstName(), entity.getLastName(), entity.getEmail(), entity.getPhoneNumber());
+        return new UserDto(entity.getId(), entity.getFirstName(), entity.getLastName(), entity.getEmail(), entity.getStreet(), entity.getHouseNumber(), entity.getPostalCode(), entity.getCity(), entity.getPhoneNumber());
     }
 }
