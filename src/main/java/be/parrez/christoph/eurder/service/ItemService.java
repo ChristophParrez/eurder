@@ -2,6 +2,8 @@ package be.parrez.christoph.eurder.service;
 
 import be.parrez.christoph.eurder.dto.ItemCreateDto;
 import be.parrez.christoph.eurder.dto.ItemDto;
+import be.parrez.christoph.eurder.dto.ItemStockDto;
+import be.parrez.christoph.eurder.dto.ItemUpdateDto;
 import be.parrez.christoph.eurder.exceptions.BadRequestException;
 import be.parrez.christoph.eurder.mapper.ItemMapper;
 import be.parrez.christoph.eurder.model.Item;
@@ -11,7 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -19,8 +24,6 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
     private final UserService userService;
-
-    private static final String VALID_EMAIL_ADDRESS_REGEX = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
     @Autowired
     public ItemService(ItemRepository itemRepository, ItemMapper itemMapper, UserService userService) {
@@ -30,19 +33,32 @@ public class ItemService {
         this.addDummyData();
     }
 
-    public void addDummyData() {
-        Item item0 = new Item("Item1", "Description1", 6.99, 2);
-        Item item1 = new Item("Item2", "Description2", 7.99, 4);
-        Item item2 = new Item("Item3", "Description3", 8.99, 6);
-        Item item3 = new Item("Item4", "Description4", 9.99, 8);
+    private void addDummyData() {
+        Item item0 = new Item("dummy-item-id-1", "Item1", "Description1", 6.99, 0);
+        Item item1 = new Item("dummy-item-id-2", "Item2", "Description2", 7.99, 4);
+        Item item2 = new Item("dummy-item-id-3", "Item3", "Description3", 8.99, 6);
+        Item item3 = new Item("dummy-item-id-4", "Item4", "Description4", 9.99, 8);
+        Item item4 = new Item("dummy-item-id-5", "Item5", "Description5", 11.99, 10);
+        Item item5 = new Item("dummy-item-id-6", "Item6", "Description6", 13.99, 12);
         this.itemRepository.getRepository().put(item0.getId(), item0);
         this.itemRepository.getRepository().put(item1.getId(), item1);
         this.itemRepository.getRepository().put(item2.getId(), item2);
         this.itemRepository.getRepository().put(item3.getId(), item3);
+        this.itemRepository.getRepository().put(item4.getId(), item4);
+        this.itemRepository.getRepository().put(item5.getId(), item5);
+    }
+
+    public Item getItemFromDatabase(String id) {
+        return itemRepository.getRepository().get(id);
     }
 
     public List<ItemDto> getItems() {
         return itemMapper.toDto(itemRepository.getRepository().values().stream().toList());
+    }
+
+    public List<ItemStockDto> getStockOverview(String authorizedId, String filter) {
+        userService.assertUserPermissions(authorizedId, UserRole.ADMIN, "You are not authorized to get the items stock.");
+        return itemMapper.toStockDto(itemRepository.getRepository().values().stream().toList(), filter);
     }
 
     public ItemDto addItem(String authorizedId, ItemCreateDto itemDto) {
@@ -55,7 +71,7 @@ public class ItemService {
         return itemMapper.toDto(newItem);
     }
 
-    public ItemDto updateItem(String authorizedId, String itemId, ItemCreateDto itemDto) {
+    public ItemDto updateItem(String authorizedId, String itemId, ItemUpdateDto itemDto) {
         userService.assertUserPermissions(authorizedId, UserRole.ADMIN, "You are not authorized to update items.");
 
         Item itemUpdate = itemRepository.getRepository().get(itemId);

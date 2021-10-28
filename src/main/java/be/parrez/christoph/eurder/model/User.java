@@ -14,10 +14,6 @@ public class User {
     private final String phoneNumber;
     private final UserRole userRole;
 
-    // public User(String firstName, String lastName, String email, String street, String houseNumber, String postalCode, String city, String phoneNumber) {
-    //     this(firstName, lastName, email, street, houseNumber, postalCode, city, phoneNumber, UserRole.CUSTOMER);
-    // }
-
     public User(String firstName, String lastName, String email, String street, String houseNumber, String postalCode, String city, String phoneNumber, UserRole userRole) {
         this(UUID.randomUUID().toString(), firstName, lastName, email, street, houseNumber, postalCode, city, phoneNumber, userRole);
     }

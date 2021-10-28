@@ -2,6 +2,8 @@ package be.parrez.christoph.eurder.controller;
 
 import be.parrez.christoph.eurder.dto.ItemCreateDto;
 import be.parrez.christoph.eurder.dto.ItemDto;
+import be.parrez.christoph.eurder.dto.ItemStockDto;
+import be.parrez.christoph.eurder.dto.ItemUpdateDto;
 import be.parrez.christoph.eurder.service.ItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +27,20 @@ public class ItemController {
     @GetMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public List<ItemDto> getAll() {
+        logger.info("Incoming get item list request");
         return itemService.getItems();
+    }
+
+    @GetMapping(path = "/stock", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ItemStockDto> getById(@RequestHeader(required = false) String authorizedId, @RequestParam(required = false) String filter) {
+        logger.info("Incoming get stock list request");
+        return itemService.getStockOverview(authorizedId, filter);
     }
 
     // @GetMapping(path = "/{uuid}", produces = "application/json")
     // @ResponseStatus(HttpStatus.OK)
-    // public UserDto getById(@RequestHeader(value = "uuid", required = false) String adminId, @PathVariable(value = "uuid") String customerId) {
+    // public UserDto getById(@RequestHeader(value = "uuid", required = false) String adminId, @PathVariable String customerId) {
     //     return userService.getCustomer(adminId, customerId);
     // }
 
@@ -44,7 +54,7 @@ public class ItemController {
     @PutMapping(path = "/{itemId}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public ItemDto update(@RequestHeader(required = false) String authorizedId,
-                          @RequestBody ItemCreateDto itemDto,
+                          @RequestBody ItemUpdateDto itemDto,
                           @PathVariable String itemId) {
         logger.info("Incoming item update request");
         return itemService.updateItem(authorizedId, itemId, itemDto);

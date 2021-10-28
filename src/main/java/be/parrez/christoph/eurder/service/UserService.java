@@ -33,7 +33,7 @@ public class UserService {
         this.addDummyData();
     }
 
-    public void addDummyData() {
+    private void addDummyData() {
         User admin = new User("3ee4a38b-27a0-admin-ad21-84833182a336", "Christoph", "Parrez", "christoph.parrez@gmail.com", "Street", "1A", "9340", "Lede", "0497123456", UserRole.ADMIN);
         User user1 = new User("cd52f722-9530-user1-8fd1-184f12a75222", "John", "Doe", "john.doe@gmail.com", "Street", "10", "9300", "Aalst", "0494962154", UserRole.CUSTOMER);
         User user2 = new User("cd52f722-9530-user2-8fd1-184f12a75222", "Sam", "Smith", "sam.smith@gmail.com", "Street", "20", "1000", "Brussel", "0477963297", UserRole.CUSTOMER);
@@ -86,11 +86,16 @@ public class UserService {
                 .noneMatch(user -> user.getEmail().equals(email));
     }
 
-    public void assertUserPermissions(String userId, UserRole userRole, String message) {
+    public User assertUserPermissions(String userId, List<UserRole> userRoles, String message) {
         User user = userRepository.getRepository().get(userId);
-        if (userId == null || user == null || !user.getUserRole().equals(userRole)) {
-            logger.warn("User with id " + userId + " did not match user role " + userRole);
+        if (userId == null || user == null || userRoles.stream().noneMatch(role -> user.getUserRole().equals(role))) {
+            logger.warn("User with id " + userId + " did not match user role " + userRoles.stream().map(Enum::toString).collect(Collectors.joining(", ")));
             throw new UnauthorizedException(message);
         }
+        return user;
+    }
+
+    public void assertUserPermissions(String userId, UserRole userRole, String message) {
+        assertUserPermissions(userId, List.of(userRole), message);
     }
 }

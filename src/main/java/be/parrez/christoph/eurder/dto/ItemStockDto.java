@@ -1,18 +1,22 @@
 package be.parrez.christoph.eurder.dto;
 
-public class ItemDto {
+import be.parrez.christoph.eurder.model.ItemStockLevel;
+
+public class ItemStockDto {
     private final String id;
     private final String name;
     private final String description;
     private final double price;
     private final int amount;
+    private final ItemStockLevel stockLevel;
 
-    public ItemDto(String id, String name, String description, double price, int amount) {
+    public ItemStockDto(String id, String name, String description, double price, int amount, ItemStockLevel stockLevel) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.amount = amount;
+        this.stockLevel = stockLevel;
     }
 
     public String getId() {
@@ -33,5 +37,9 @@ public class ItemDto {
 
     public int getAmount() {
         return amount;
+    }
+
+    public ItemStockLevel getStockLevel() {
+        return stockLevel;
     }
 }

@@ -1,18 +1,18 @@
 package be.parrez.christoph.eurder.dto;
 
-public class ItemDto {
+import be.parrez.christoph.eurder.model.Item;
+
+public class ItemDataCopy {
     private final String id;
     private final String name;
     private final String description;
     private final double price;
-    private final int amount;
 
-    public ItemDto(String id, String name, String description, double price, int amount) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.amount = amount;
+    public ItemDataCopy(Item item) {
+        this.id = item.getId();
+        this.name = item.getName();
+        this.description = item.getDescription();
+        this.price = item.getPrice();
     }
 
     public String getId() {
@@ -29,9 +29,5 @@ public class ItemDto {
 
     public double getPrice() {
         return price;
-    }
-
-    public int getAmount() {
-        return amount;
     }
 }
