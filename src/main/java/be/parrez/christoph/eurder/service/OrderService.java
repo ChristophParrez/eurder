@@ -88,12 +88,13 @@ public class OrderService {
 
         Order newOrder = new Order(authorizedId);
 
-        // logger.info(
-        //         "Trying to order " +
-        //         orderCreateDto.getItems().stream()
-        //                 .map(item -> item.getItemId() + " -> " + item.getAmount())
-        //                 .collect(Collectors.joining("\n"))
-        // );
+        logger.info(
+                "Trying to order --> " +
+                orderCreateDto.getItems().stream()
+                        .map(item -> item.getItemId() + " -> " + item.getAmount())
+                        .collect(Collectors.joining(", ")) +
+                " as user with id " + authorizedId
+        );
 
         // ItemGroup itemGroup1 = new ItemGroup(itemService.getItemFromDatabase("dummy-item-id-1"), 2);
         // ItemGroup itemGroup2 = new ItemGroup(itemService.getItemFromDatabase("dummy-item-id-2"), 1);

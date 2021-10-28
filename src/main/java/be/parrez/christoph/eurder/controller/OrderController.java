@@ -29,7 +29,8 @@ public class OrderController {
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderDto add(@RequestHeader(required = false) String authorizedId, @RequestBody OrderCreateDto orderDto) {
+    public OrderDto add(@RequestHeader(required = false) String authorizedId,
+                        @RequestBody OrderCreateDto orderDto) {
         logger.info("Incoming new order request");
         return orderService.createOrder(authorizedId, orderDto);
     }

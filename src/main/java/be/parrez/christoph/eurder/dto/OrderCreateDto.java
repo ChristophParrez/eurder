@@ -1,27 +1,19 @@
 package be.parrez.christoph.eurder.dto;
 
 import be.parrez.christoph.eurder.model.OrderCreateItem;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 import java.util.List;
 
 public class OrderCreateDto {
-    // private final List<OrderCreateItem> items;
+    private final List<OrderCreateItem> items;
 
-    // public OrderCreateDto(List<OrderCreateItem> items) {
-    //     this.items = items;
-    // }
-    //
-    // public List<OrderCreateItem> getItems() {
-    //     return items;
-    // }
-
-    private final String items;
-
-    public OrderCreateDto(String items) {
+    @JsonCreator // I GET AN ERROR WITHOUT THIS, WHY???
+    public OrderCreateDto(List<OrderCreateItem> items) {
         this.items = items;
     }
 
-    public String getItems() {
+    public List<OrderCreateItem> getItems() {
         return items;
     }
 }
