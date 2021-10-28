@@ -1,10 +1,10 @@
-package be.parrez.christoph.eurder.model;
+package be.parrez.christoph.eurder.dto;
 
-public class OrderCreateItem {
+public class ItemGroupCreateDto {
     private final String itemId;
     private final int amount;
 
-    public OrderCreateItem(String itemId, int amount) {
+    public ItemGroupCreateDto(String itemId, int amount) {
         this.itemId = itemId;
         this.amount = amount;
     }

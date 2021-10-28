@@ -1,6 +1,10 @@
 package be.parrez.christoph.eurder.model;
 
 import be.parrez.christoph.eurder.dto.ItemDataCopy;
+import be.parrez.christoph.eurder.service.ItemService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
@@ -8,6 +12,10 @@ public class ItemGroup {
     private final ItemDataCopy item;
     private final int amount;
     private final LocalDate shippingDate;
+
+
+    // @Autowired
+    private ItemService itemService;
 
     public ItemGroup(Item item, int amount) {
         this.amount = amount;
