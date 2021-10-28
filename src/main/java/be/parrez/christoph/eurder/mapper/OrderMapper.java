@@ -5,6 +5,7 @@ import be.parrez.christoph.eurder.dto.OrderDto;
 import be.parrez.christoph.eurder.model.ItemGroup;
 import be.parrez.christoph.eurder.model.Order;
 import be.parrez.christoph.eurder.dto.OrderReportDto;
+import be.parrez.christoph.eurder.repository.ItemRepository;
 import be.parrez.christoph.eurder.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class OrderMapper {
 
     @Autowired
-    private ItemService itemService;
+    private ItemRepository itemRepository;
 
     public OrderDto toDto(Order entity) {
         return new OrderDto(entity.getId(), entity.getItems(), entity.getCustomerId(), entity.getTotalPrice());
@@ -31,7 +32,7 @@ public class OrderMapper {
     }
 
     public ItemGroup toEntity(ItemGroupCreateDto dto) {
-        return new ItemGroup(itemService.getItemFromDatabase(dto.getItemId()), dto.getAmount());
+        return new ItemGroup(itemRepository.getEntry(dto.getItemId()), dto.getAmount());
     }
 
     public List<ItemGroup> toEntity(List<ItemGroupCreateDto> itemsDto) {

@@ -14,9 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -40,33 +38,32 @@ public class ItemService {
         Item item3 = new Item("dummy-item-id-4", "Item4", "Description4", 9.99, 8);
         Item item4 = new Item("dummy-item-id-5", "Item5", "Description5", 11.99, 10);
         Item item5 = new Item("dummy-item-id-6", "Item6", "Description6", 13.99, 12);
-        this.itemRepository.getRepository().put(item0.getId(), item0);
-        this.itemRepository.getRepository().put(item1.getId(), item1);
-        this.itemRepository.getRepository().put(item2.getId(), item2);
-        this.itemRepository.getRepository().put(item3.getId(), item3);
-        this.itemRepository.getRepository().put(item4.getId(), item4);
-        this.itemRepository.getRepository().put(item5.getId(), item5);
+        this.itemRepository.save(item0);
+        this.itemRepository.save(item1);
+        this.itemRepository.save(item2);
+        this.itemRepository.save(item3);
+        this.itemRepository.save(item4);
+        this.itemRepository.save(item5);
     }
 
-    public Item getItemFromDatabase(String id) {
-        return itemRepository.getRepository().get(id);
-    }
+    // public Item getItemFromDatabase(String id) {
+    //     return itemRepository.getRepository().get(id);
+    // }
 
-    public List<ItemDto> getItems() {
-        return itemMapper.toDto(itemRepository.getRepository().values().stream().toList());
+    public List<ItemDto> getAllItems() {
+        return itemMapper.toDto(itemRepository.getEntries());
     }
 
     public List<ItemStockDto> getStockOverview(String authorizedId, String filter) {
         userService.assertUserPermissions(authorizedId, UserRole.ADMIN, "You are not authorized to get the items stock.");
-        return itemMapper.toStockDto(itemRepository.getRepository().values().stream().toList(), filter);
+        return itemMapper.toStockDto(itemRepository.getEntries(), filter);
     }
 
     public ItemDto addItem(String authorizedId, ItemCreateDto itemDto) {
         userService.assertUserPermissions(authorizedId, UserRole.ADMIN, "You are not authorized to add items.");
 
         Item newItem = itemMapper.toEntity(itemDto);
-        itemRepository.getRepository().put(newItem.getId(), newItem);
-        logger.info("Created new item with id " + newItem.getId());
+        itemRepository.save(newItem);
 
         return itemMapper.toDto(newItem);
     }
@@ -74,7 +71,7 @@ public class ItemService {
     public ItemDto updateItem(String authorizedId, String itemId, ItemUpdateDto itemDto) {
         userService.assertUserPermissions(authorizedId, UserRole.ADMIN, "You are not authorized to update items.");
 
-        Item itemUpdate = itemRepository.getRepository().get(itemId);
+        Item itemUpdate = itemRepository.getEntry(itemId);
         if (itemUpdate == null) throw new BadRequestException("The item with id " + itemId + " could not be found.", logger);
 
         itemUpdate.setName(itemDto.getName());
@@ -82,7 +79,7 @@ public class ItemService {
         itemUpdate.setDescription(itemDto.getDescription());
         itemUpdate.setPrice(itemDto.getPrice());
 
-        itemRepository.getRepository().put(itemId, itemUpdate);
+        itemRepository.save(itemUpdate);
         logger.info("Updated item with id " + itemId);
 
         return itemMapper.toDto(itemUpdate);

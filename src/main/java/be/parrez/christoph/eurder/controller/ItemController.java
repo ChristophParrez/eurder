@@ -28,7 +28,7 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     public List<ItemDto> getAll() {
         logger.info("Incoming get item list request");
-        return itemService.getItems();
+        return itemService.getAllItems();
     }
 
     @GetMapping(path = "/stock", produces = "application/json")
