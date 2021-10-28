@@ -13,17 +13,14 @@ public class ItemGroup {
     private final int amount;
     private final LocalDate shippingDate;
 
-
-    // @Autowired
-    private ItemService itemService;
-
     public ItemGroup(Item item, int amount) {
         this.amount = amount;
         this.shippingDate = calculateShippingDate(item, amount);
-        this.item = new ItemDataCopy(item);
+        this.item = item != null ? new ItemDataCopy(item) : null;
     }
 
     private LocalDate calculateShippingDate(Item item, int amountNeeded) {
+        if (item == null) return null;
         return item.getAmount() >= amountNeeded ? LocalDate.now().plusDays(1) : LocalDate.now().plusDays(7);
     }
 
@@ -40,6 +37,7 @@ public class ItemGroup {
     }
 
     public double getTotalPrice() {
+        if (item == null) return 0;
         return item.getPrice() * amount;
     }
 }

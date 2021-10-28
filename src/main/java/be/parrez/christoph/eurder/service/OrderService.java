@@ -75,17 +75,7 @@ public class OrderService {
 
     public OrderDto createOrder(String authorizedId, OrderCreateDto orderCreateDto) {
         userService.assertUserPermissions(authorizedId, List.of(UserRole.ADMIN, UserRole.CUSTOMER), "You are not authorized to create orders.");
-
-        // Order newOrder = new Order(authorizedId);
-
-        logger.info(
-                "Trying to order --> " +
-                        orderCreateDto.getItems().stream()
-                                .map(item -> item.getItemId() + " -> " + item.getAmount())
-                                .collect(Collectors.joining(", ")) +
-                        " as user with id " + authorizedId
-        );
-
+        logger.info("Trying to order --> " + orderCreateDto.getItems().stream().map(item -> item.getItemId() + " x " + item.getAmount()).collect(Collectors.joining(", ")) + " as user with id " + authorizedId);
         Order newOrder = new Order(authorizedId, orderMapper.toEntity(orderCreateDto.getItems()));
         orderRepository.getRepository().put(newOrder.getId(), newOrder);
         return orderMapper.toDto(newOrder);

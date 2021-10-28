@@ -1,8 +1,6 @@
 package be.parrez.christoph.eurder.dto;
 
-import be.parrez.christoph.eurder.service.ItemService;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
