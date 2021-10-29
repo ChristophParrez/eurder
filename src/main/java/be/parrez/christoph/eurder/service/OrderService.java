@@ -82,4 +82,9 @@ public class OrderService {
 
         return orderMapper.toDto(newOrder);
     }
+
+    public OrderDto reCreateOrder(String authorizedId, String orderId) {
+        logger.info("User with id " + authorizedId + " trying to recreate order " + orderId);
+        return null;
+    }
 }

@@ -35,4 +35,12 @@ public class OrderController {
         return orderService.createOrder(authorizedId, orderDto);
     }
 
+    @PostMapping(path = "/{orderId}", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public OrderDto add(@RequestHeader(required = false) String authorizedId,
+                        @PathVariable String orderId) {
+        logger.info("Incoming new order request");
+        return orderService.reCreateOrder(authorizedId, orderId);
+    }
+
 }
