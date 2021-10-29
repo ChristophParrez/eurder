@@ -38,17 +38,13 @@ public class ItemService {
         Item item3 = new Item("dummy-item-id-4", "Item4", "Description4", 9.99, 8);
         Item item4 = new Item("dummy-item-id-5", "Item5", "Description5", 11.99, 10);
         Item item5 = new Item("dummy-item-id-6", "Item6", "Description6", 13.99, 12);
-        this.itemRepository.save(item0);
-        this.itemRepository.save(item1);
-        this.itemRepository.save(item2);
-        this.itemRepository.save(item3);
-        this.itemRepository.save(item4);
-        this.itemRepository.save(item5);
+        itemRepository.save(item0);
+        itemRepository.save(item1);
+        itemRepository.save(item2);
+        itemRepository.save(item3);
+        itemRepository.save(item4);
+        itemRepository.save(item5);
     }
-
-    // public Item getItemFromDatabase(String id) {
-    //     return itemRepository.getRepository().get(id);
-    // }
 
     public List<ItemDto> getAllItems() {
         return itemMapper.toDto(itemRepository.getEntries());
