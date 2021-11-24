@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.List;
 
 public class OrderCreateDto {
+
     private final List<ItemGroupCreateDto> items;
 
     @JsonCreator

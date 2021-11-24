@@ -1,10 +1,8 @@
 package be.parrez.christoph.eurder.mapper;
 
-import be.parrez.christoph.eurder.controller.ItemController;
 import be.parrez.christoph.eurder.dto.ItemCreateDto;
 import be.parrez.christoph.eurder.dto.ItemDto;
 import be.parrez.christoph.eurder.dto.ItemStockDto;
-import be.parrez.christoph.eurder.dto.ItemUpdateDto;
 import be.parrez.christoph.eurder.model.Item;
 import be.parrez.christoph.eurder.model.ItemStockLevel;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class ItemMapper {
     public Item toEntity(ItemCreateDto dto) {
-        return new Item(dto.getName(), dto.getDescription(), dto.getPrice(), dto.getAmount());
+        return new Item(dto.getName(), dto.getDescription(), dto.getPrice(), dto.getStock());
     }
 
     public List<ItemDto> toDto(List<Item> items) {
@@ -24,7 +22,7 @@ public class ItemMapper {
     }
 
     public ItemDto toDto(Item entity) {
-        return new ItemDto(entity.getId(), entity.getName(), entity.getDescription(), entity.getPrice(), entity.getAmount());
+        return new ItemDto(entity.getItemId(), entity.getName(), entity.getDescription(), entity.getPrice(), entity.getStock());
     }
 
     public List<ItemStockDto> toStockDto(List<Item> items, String filter) {
@@ -39,9 +37,9 @@ public class ItemMapper {
 
     public ItemStockDto toStockDto(Item entity) {
         ItemStockLevel stockLevel;
-        if (entity.getAmount() < 5) stockLevel = ItemStockLevel.STOCK_LOW;
-        else if (entity.getAmount() < 10) stockLevel = ItemStockLevel.STOCK_MEDIUM;
+        if (entity.getStock() < 5) stockLevel = ItemStockLevel.STOCK_LOW;
+        else if (entity.getStock() < 10) stockLevel = ItemStockLevel.STOCK_MEDIUM;
         else stockLevel = ItemStockLevel.STOCK_HIGH;
-        return new ItemStockDto(entity.getId(), entity.getName(), entity.getDescription(), entity.getPrice(), entity.getAmount(), stockLevel);
+        return new ItemStockDto(entity.getItemId(), entity.getName(), entity.getDescription(), entity.getPrice(), entity.getStock(), stockLevel);
     }
 }

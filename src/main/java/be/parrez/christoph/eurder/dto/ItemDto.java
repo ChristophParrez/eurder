@@ -5,14 +5,14 @@ public class ItemDto {
     private final String name;
     private final String description;
     private final double price;
-    private final int amount;
+    private final int stock;
 
-    public ItemDto(String id, String name, String description, double price, int amount) {
+    public ItemDto(String id, String name, String description, double price, int stock) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.amount = amount;
+        this.stock = stock;
     }
 
     public String getId() {
@@ -31,7 +31,7 @@ public class ItemDto {
         return price;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getStock() {
+        return stock;
     }
 }

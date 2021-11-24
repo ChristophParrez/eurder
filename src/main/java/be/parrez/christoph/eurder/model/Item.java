@@ -1,28 +1,45 @@
 package be.parrez.christoph.eurder.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.UUID;
 
+@Entity
+@Table(name = "items")
 public class Item {
-    private final String id;
-    private String name;
-    private String description;
-    private double price;
-    private int amount;
 
-    public Item(String id, String name, String description, double price, int amount) {
-        this.id = id;
+    @Id
+    @Column(name = "item_id")
+    private String itemId;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "price")
+    private double price;
+
+    @Column(name = "stock")
+    private int stock;
+
+    public Item(String name, String description, double price, int stock) {
+        this.itemId = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
         this.price = price;
-        this.amount = amount;
+        this.stock = stock;
     }
 
-    public Item(String name, String description, double price, int amount) {
-        this(UUID.randomUUID().toString(), name, description, price, amount);
+    public Item() {
+
     }
 
-    public String getId() {
-        return id;
+    public String getItemId() {
+        return itemId;
     }
 
     public String getName() {
@@ -37,8 +54,8 @@ public class Item {
         return price;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getStock() {
+        return stock;
     }
 
     public void setName(String name) {
@@ -53,7 +70,7 @@ public class Item {
         this.price = price;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setStock(int amount) {
+        this.stock = amount;
     }
 }

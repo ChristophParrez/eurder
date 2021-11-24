@@ -1,25 +1,46 @@
 package be.parrez.christoph.eurder.model;
 
+import javax.persistence.*;
 import java.util.UUID;
 
+@Entity
+@Table(name = "users")
 public class User {
-    private final String id;
-    private final String firstName;
-    private final String lastName;
-    private final String email;
-    private final String street;
-    private final String houseNumber;
-    private final String postalCode;
-    private final String city;
-    private final String phoneNumber;
-    private final UserRole userRole;
+
+    @Id
+    @Column(name = "user_id")
+    private String userId;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "street")
+    private String street;
+
+    @Column(name = "house_number")
+    private String houseNumber;
+
+    @Column(name = "postal_code")
+    private String postalCode;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "user_role")
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 
     public User(String firstName, String lastName, String email, String street, String houseNumber, String postalCode, String city, String phoneNumber, UserRole userRole) {
-        this(UUID.randomUUID().toString(), firstName, lastName, email, street, houseNumber, postalCode, city, phoneNumber, userRole);
-    }
-
-    public User(String userId, String firstName, String lastName, String email, String street, String houseNumber, String postalCode, String city, String phoneNumber, UserRole userRole) {
-        this.id = userId;
+        this.userId = UUID.randomUUID().toString();
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -31,8 +52,12 @@ public class User {
         this.userRole = userRole;
     }
 
+    public User() {
+
+    }
+
     public String getId() {
-        return id;
+        return userId;
     }
 
     public String getFirstName() {

@@ -1,16 +1,17 @@
 package be.parrez.christoph.eurder.dto;
 
-import be.parrez.christoph.eurder.model.ItemGroup;
+import be.parrez.christoph.eurder.model.OrderItem;
 
 import java.util.List;
 
 public class OrderDto {
     private final String orderId;
     private final String customerId;
-    private final List<ItemGroup> items;
+    private final List<OrderItemDto> items;
     private final double totalPrice;
+    // private final OriginalItemDto originalItem;
 
-    public OrderDto(String orderId, List<ItemGroup> items, String customerId, double totalPrice) {
+    public OrderDto(String orderId, List<OrderItemDto> items, String customerId, double totalPrice) {
         this.orderId = orderId;
         this.customerId = customerId;
         this.items = items;
@@ -25,7 +26,7 @@ public class OrderDto {
         return customerId;
     }
 
-    public List<ItemGroup> getItems() {
+    public List<OrderItemDto> getItems() {
         return items;
     }
 

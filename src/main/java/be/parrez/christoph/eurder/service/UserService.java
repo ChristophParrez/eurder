@@ -11,10 +11,14 @@ import be.parrez.christoph.eurder.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.NonNullApi;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,18 +34,6 @@ public class UserService {
     public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
-        this.addDummyData();
-    }
-
-    private void addDummyData() {
-        User admin = new User("3ee4a38b-27a0-admin-ad21-84833182a336", "Christoph", "Parrez", "christoph.parrez@gmail.com", "Street", "1A", "9340", "Lede", "0497123456", UserRole.ADMIN);
-        User user1 = new User("cd52f722-9530-user1-8fd1-184f12a75222", "John", "Doe", "john.doe@gmail.com", "Street", "10", "9300", "Aalst", "0494962154", UserRole.CUSTOMER);
-        User user2 = new User("cd52f722-9530-user2-8fd1-184f12a75222", "Sam", "Smith", "sam.smith@gmail.com", "Street", "20", "1000", "Brussel", "0477963297", UserRole.CUSTOMER);
-        User user3 = new User("cd52f722-9530-user3-8fd1-184f12a75222", "Joe", "Johnson", "joe.johnson@gmail.com", "Street", "30", "9000", "Gent", "046963487", UserRole.CUSTOMER);
-        this.userRepository.save(admin);
-        this.userRepository.save(user1);
-        this.userRepository.save(user2);
-        this.userRepository.save(user3);
     }
 
     public UserDto registerCustomer(UserRegisterDto userDto) {
@@ -60,7 +52,7 @@ public class UserService {
 
     public UserDto getCustomer(String authorizedId, String customerId) {
         assertUserPermissions(authorizedId, UserRole.ADMIN, "You are not authorized to get customer details.");
-        User user = userRepository.getEntry(customerId);
+        User user = userRepository.findByUserId(customerId);
         if (user == null) throw new BadRequestException("The user with id " + customerId + " could not be found.");
         return userMapper.toDto(user);
     }
@@ -71,7 +63,7 @@ public class UserService {
     }
 
     public List<User> getUsersByRole(UserRole userRole) {
-        return userRepository.getEntries().stream()
+        return userRepository.findAll().stream()
                 .filter(user -> user.getUserRole().equals(userRole))
                 .collect(Collectors.toList());
     }
@@ -81,12 +73,12 @@ public class UserService {
     }
 
     private boolean isUniqueEmail(String email) {
-        return this.userRepository.getEntries().stream()
+        return userRepository.findAll().stream()
                 .noneMatch(user -> user.getEmail().equals(email));
     }
 
     public User assertUserPermissions(String userId, List<UserRole> userRoles, String message) {
-        User user = userRepository.getEntry(userId);
+        User user = userRepository.findByUserId(userId);
         if (userId == null || user == null || userRoles.stream().noneMatch(role -> user.getUserRole().equals(role))) {
             logger.warn("User with id " + userId + " did not match user role " + userRoles.stream().map(Enum::toString).collect(Collectors.joining(", ")));
             throw new UnauthorizedException(message);

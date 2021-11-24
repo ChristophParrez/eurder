@@ -28,31 +28,15 @@ public class ItemService {
         this.itemRepository = itemRepository;
         this.itemMapper = itemMapper;
         this.userService = userService;
-        this.addDummyData();
-    }
-
-    private void addDummyData() {
-        Item item0 = new Item("dummy-item-id-1", "Item1", "Description1", 6.99, 0);
-        Item item1 = new Item("dummy-item-id-2", "Item2", "Description2", 7.99, 4);
-        Item item2 = new Item("dummy-item-id-3", "Item3", "Description3", 8.99, 6);
-        Item item3 = new Item("dummy-item-id-4", "Item4", "Description4", 9.99, 8);
-        Item item4 = new Item("dummy-item-id-5", "Item5", "Description5", 11.99, 10);
-        Item item5 = new Item("dummy-item-id-6", "Item6", "Description6", 13.99, 12);
-        itemRepository.save(item0);
-        itemRepository.save(item1);
-        itemRepository.save(item2);
-        itemRepository.save(item3);
-        itemRepository.save(item4);
-        itemRepository.save(item5);
     }
 
     public List<ItemDto> getAllItems() {
-        return itemMapper.toDto(itemRepository.getEntries());
+        return itemMapper.toDto(itemRepository.findAll());
     }
 
     public List<ItemStockDto> getStockOverview(String authorizedId, String filter) {
         userService.assertUserPermissions(authorizedId, UserRole.ADMIN, "You are not authorized to get the items stock.");
-        return itemMapper.toStockDto(itemRepository.getEntries(), filter);
+        return itemMapper.toStockDto(itemRepository.findAll(), filter);
     }
 
     public ItemDto addItem(String authorizedId, ItemCreateDto itemDto) {
@@ -67,11 +51,11 @@ public class ItemService {
     public ItemDto updateItem(String authorizedId, String itemId, ItemUpdateDto itemDto) {
         userService.assertUserPermissions(authorizedId, UserRole.ADMIN, "You are not authorized to update items.");
 
-        Item itemUpdate = itemRepository.getEntry(itemId);
+        Item itemUpdate = itemRepository.findByItemId(itemId);
         if (itemUpdate == null) throw new BadRequestException("The item with id " + itemId + " could not be found.", logger);
 
         itemUpdate.setName(itemDto.getName());
-        itemUpdate.setAmount(itemDto.getAmount());
+        itemUpdate.setStock(itemDto.getAmount());
         itemUpdate.setDescription(itemDto.getDescription());
         itemUpdate.setPrice(itemDto.getPrice());
 

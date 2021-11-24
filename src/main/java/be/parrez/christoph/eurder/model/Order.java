@@ -1,33 +1,47 @@
 package be.parrez.christoph.eurder.model;
 
+import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
+@Entity
+@Table(name = "orders")
 public class Order {
 
-    private final String id;
-    private final String customerId;
-    private final List<ItemGroup> items;
+    @Id
+    @Column(name = "order_id")
+    private String orderId;
 
-    public Order(String customerId, List<ItemGroup> items) {
-        this.id = UUID.randomUUID().toString();
+    @Column(name = "customer_id")
+    private String customerId;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
+    private List<OrderItem> items;
+
+    public Order(String customerId, List<OrderItem> items) {
+        this.orderId = UUID.randomUUID().toString();
         this.customerId = customerId;
         this.items = items;
     }
 
-    public String getId() {
-        return id;
+    public Order() {
+
+    }
+
+    public String getOrderId() {
+        return orderId;
     }
 
     public String getCustomerId() {
         return customerId;
     }
 
-    public List<ItemGroup> getItems() {
+    public List<OrderItem> getItems() {
         return items;
     }
 
-    public void add(ItemGroup itemGroup) {
+    public void add(OrderItem itemGroup) {
         items.add(itemGroup);
     }
 
@@ -36,6 +50,6 @@ public class Order {
     }
 
     public double getTotalPrice() {
-        return this.items.stream().mapToDouble(ItemGroup::getTotalPrice).sum();
+        return this.items.stream().mapToDouble(OrderItem::getTotalPrice).sum();
     }
 }
